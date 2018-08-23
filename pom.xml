@@ -2,12 +2,12 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.gaurav.kafka</groupId>
-	<artifactId>kakfa-producer-consumer-example</artifactId>
+	<groupId>eu.europa.ec.contentlayer</groupId>
+	<artifactId>datapod</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>kakfa-producer-consumer-example</name>
+	<name>OpenEuropa datapod</name>
 	<url>http://maven.apache.org</url>
 
 	<properties>
