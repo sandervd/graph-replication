@@ -5,19 +5,19 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Deserializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.contentlayer.pod.pojo.CustomObject;
+import eu.europa.ec.contentlayer.pod.pojo.RdfTransaction;
 
-public class CustomDeserializer implements Deserializer<CustomObject> {
+public class RdfTransactionDeserializer implements Deserializer<RdfTransaction> {
 	@Override
 	public void configure(Map<String, ?> configs, boolean isKey) {
 	}
 
 	@Override
-	public CustomObject deserialize(String topic, byte[] data) {
+	public RdfTransaction deserialize(String topic, byte[] data) {
 		ObjectMapper mapper = new ObjectMapper();
-		CustomObject object = null;
+		RdfTransaction object = null;
 		try {
-			object = mapper.readValue(data, CustomObject.class);
+			object = mapper.readValue(data, RdfTransaction.class);
 		} catch (Exception exception) {
 			System.out.println("Error in deserializing bytes " + exception);
 		}

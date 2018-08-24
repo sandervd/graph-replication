@@ -2,7 +2,7 @@ package eu.europa.ec.contentlayer.pod;
 
 import java.util.concurrent.ExecutionException;
 
-import eu.europa.ec.contentlayer.pod.pojo.CustomObject;
+import eu.europa.ec.contentlayer.pod.pojo.RdfTransaction;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.apache.kafka.clients.producer.Producer;
@@ -13,6 +13,7 @@ import org.apache.kafka.clients.producer.RecordMetadata;
 import eu.europa.ec.contentlayer.pod.constants.IKafkaConstants;
 import eu.europa.ec.contentlayer.pod.consumer.ConsumerCreator;
 import eu.europa.ec.contentlayer.pod.producer.ProducerCreator;
+import org.apache.kafka.clients.producer.internals.ProducerBatch;
 
 public class App {
 	public static void main(String[] args) {
@@ -21,12 +22,12 @@ public class App {
 	}
 
 	static void runConsumer() {
-		Consumer<Long, CustomObject> consumer = ConsumerCreator.createConsumer();
+		Consumer<Long, RdfTransaction> consumer = ConsumerCreator.createConsumer();
 
 		int noMessageToFetch = 0;
 
 		while (true) {
-			final ConsumerRecords<Long, CustomObject> consumerRecords = consumer.poll(1000);
+			final ConsumerRecords<Long, RdfTransaction> consumerRecords = consumer.poll(1000);
 			if (consumerRecords.count() == 0) {
 				noMessageToFetch++;
 				if (noMessageToFetch > IKafkaConstants.MAX_NO_MESSAGE_FOUND_COUNT)
@@ -43,22 +44,23 @@ public class App {
 				//System.out.println("Record offset " + record.offset());
 			});
 			consumer.commitAsync();
+
 		}
 		consumer.close();
 	}
 
 	static void runProducer() {
-		Producer<Long, CustomObject> producer = ProducerCreator.createProducer();
+		Producer<Long, RdfTransaction> producer = ProducerCreator.createProducer();
 
 		for (int index = 0; index < IKafkaConstants.MESSAGE_COUNT; index++) {
-			CustomObject test = new CustomObject();
+			RdfTransaction test = new RdfTransaction();
 			test.setName("My names is " + index);
 			test.setId(String.valueOf(index));
-			final ProducerRecord<Long, CustomObject> record = new ProducerRecord<Long, CustomObject>(IKafkaConstants.TOPIC_NAME, test);
+			final ProducerRecord<Long, RdfTransaction> record = new ProducerRecord<Long, RdfTransaction>(IKafkaConstants.TOPIC_NAME, test);
 			try {
 				RecordMetadata metadata = producer.send(record).get();
-				//System.out.println("Record sent with key " + index + " to partition " + metadata.partition()
-				//		+ " with offset " + metadata.offset());
+				System.out.println("Record sent with key " + index + " to partition " + metadata.partition()
+						+ " with offset " + metadata.offset());
 			} catch (ExecutionException e) {
 				System.out.println("Error in sending record");
 				System.out.println(e);

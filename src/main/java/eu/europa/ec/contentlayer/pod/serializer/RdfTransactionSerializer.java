@@ -5,9 +5,9 @@ import java.util.Map;
 import org.apache.kafka.common.serialization.Serializer;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import eu.europa.ec.contentlayer.pod.pojo.CustomObject;
+import eu.europa.ec.contentlayer.pod.pojo.RdfTransaction;
 
-public class CustomSerializer implements Serializer<CustomObject> {
+public class RdfTransactionSerializer implements Serializer<RdfTransaction> {
 
 	@Override
 	public void configure(Map<String, ?> configs, boolean isKey) {
@@ -15,7 +15,7 @@ public class CustomSerializer implements Serializer<CustomObject> {
 	}
 
 	@Override
-	public byte[] serialize(String topic, CustomObject data) {
+	public byte[] serialize(String topic, RdfTransaction data) {
 		byte[] retVal = null;
 		ObjectMapper objectMapper = new ObjectMapper();
 		try {
