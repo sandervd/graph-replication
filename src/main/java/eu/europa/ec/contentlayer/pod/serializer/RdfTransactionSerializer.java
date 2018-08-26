@@ -22,6 +22,7 @@ public class RdfTransactionSerializer implements Serializer<RdfTransaction> {
 			retVal = objectMapper.writeValueAsString(data).getBytes();
 		} catch (Exception exception) {
 			System.out.println("Error in serializing object" + data);
+			System.out.println(exception);
 		}
 		return retVal;
 	}

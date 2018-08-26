@@ -8,38 +8,20 @@ public class RdfTransaction implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String tripleSubject;
-
 	private Boolean delete = Boolean.FALSE;
+
+	private String Statements;
 	
-	private String id;
-	private String name;
-
-	public String getTripleSubject() {
-		return tripleSubject;
-	}
-
-	public void setTripleSubject(String tripleSubject) {
-		this.tripleSubject = tripleSubject;
-	}
-
 	public void setDelete() {
 		this.delete = Boolean.TRUE;
 	}
 
-	public String getId() {
-		return id;
+	public String getStatements() {
+		return Statements;
 	}
 
-	public void setId(String id) {
-		this.id = id;
+	public void setStatements(String statements) {
+		Statements = statements;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
 }
