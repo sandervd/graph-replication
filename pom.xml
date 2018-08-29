@@ -38,5 +38,18 @@
 			<version>3.8.0</version>
 		</dependency>
 
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-rdfconnection</artifactId>
+			<version>3.8.0</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.apache.jena</groupId>
+			<artifactId>jena-fuseki-war</artifactId>
+			<type>war</type>
+			<version>3.8.0</version>
+		</dependency>
+
 	</dependencies>
 </project>

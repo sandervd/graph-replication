@@ -31,3 +31,14 @@ services:
       - ./broker/kafka-1/data:/var/lib/kafka/data
     depends_on:
       - zookeeper-1
+
+  fuseki-1:
+    image: stain/jena-fuseki
+    hostname: fuseki-1
+    ports:
+    - "3030:3030"
+    volumes:
+    - ./triplestore/fuseki-1:/fuseki
+    environment:
+      ADMIN_PASSWORD: secret
+
