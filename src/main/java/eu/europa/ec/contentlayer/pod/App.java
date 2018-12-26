@@ -1,17 +1,15 @@
 package eu.europa.ec.contentlayer.pod;
 
-import java.util.*;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
-import eu.europa.ec.contentlayer.pod.pojo.AppConfig;
-import eu.europa.ec.contentlayer.pod.pojo.ConsumerThread;
-import eu.europa.ec.contentlayer.pod.pojo.ProducerService;
-import eu.europa.ec.contentlayer.pod.pojo.RdfTransaction;
-import eu.europa.ec.contentlayer.pod.statemachine.StateMachine;
-import org.apache.jena.rdf.model.*;
+import eu.europa.ec.contentlayer.pod.pojo.*;
 import org.apache.kafka.clients.producer.Producer;
 
 
 import eu.europa.ec.contentlayer.pod.producer.ProducerCreator;
+import org.eclipse.rdf4j.rio.*;
 
 public class App {
 	private AppConfig appConfig;
@@ -33,14 +31,37 @@ public class App {
 	static void runProducer() {
 		Producer<String, RdfTransaction> producer = ProducerCreator.createProducer();
 
-		Model model = ProducerService.buildModelFromFile("/home/sander/eurovoc.rdf");
+		try {
+			InputStream inputStream = new FileInputStream("/home/sander/eurovoc.rdf");
+			//InputStream inputStream = new FileInputStream("/home/sander/countries-skos.rdf");
+			RDFParser rdfParser = Rio.createParser(RDFFormat.RDFXML);
+			ModelBySubject subjectModelList = new ModelBySubject();
+			rdfParser.setRDFHandler(subjectModelList);
+			try {
+				rdfParser.parse(inputStream, "http://example.org/");
+			}
+			catch (IOException e) {
+				// handle IO problems (e.g. the file could not be read)
+			}
+			catch (RDFParseException e) {
+				// handle unrecoverable parse error
+			}
+			catch (RDFHandlerException e) {
+				// handle a problem encountered by the RDFHandler
+			}
+			finally {
+				inputStream.close();
+			}
+			//Map<String, LinkedHashModel> subjectModels = ProducerService.extractSubjectModels(model);
+			System.out.println("Model parsed");
 
-		Map<String, Model> subjectModels = ProducerService.extractSubjectModels(model);
-		System.out.println("Model parsed");
-		subjectModels.forEach((subject, subjectModel) -> {
-			RdfTransaction Transaction = ProducerService.buildRdfTransaction(subjectModel);
-			ProducerService.commitTransaction(producer, Transaction, subject);
-		});
+			subjectModelList.getModels().forEach((subject, subjectModel) -> {
+				RdfTransaction Transaction = ProducerService.buildRdfTransaction(subjectModel);
+				ProducerService.commitTransaction(producer, Transaction, subject);
+			});
+		}
+		catch (Exception e) {
+			System.out.println(e);
+		}
 	}
-
 }

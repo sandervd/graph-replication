@@ -42,3 +42,13 @@ services:
     environment:
       ADMIN_PASSWORD: secret
 
+  rdf4j-workbench-1:
+    image: yyz1989/rdf4j
+    hostname: rdf4j-workbench-1
+    ports:
+      - "8080:8080"
+    volumes:
+      - ./rdf4j/workbench-1/:/data
+    environment:
+      RDF4J_DATA: /data
+
