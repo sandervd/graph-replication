@@ -10,17 +10,28 @@ import org.apache.kafka.clients.producer.Producer;
 
 import eu.europa.ec.contentlayer.pod.producer.ProducerCreator;
 import org.eclipse.rdf4j.rio.*;
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ConfigurableApplicationContext;
 
+@SpringBootApplication
 public class App {
 	private AppConfig appConfig;
 
 	public static void main(String[] args) {
-		ConsumerThread consumerThread = new ConsumerThread("ct1");
-		consumerThread.t.start();
+		ConfigurableApplicationContext cont = SpringApplication.run(App.class, args);
+		for(String serviceName : cont.getBeanDefinitionNames()) {
+			System.out.println(serviceName);
+		}
+
+		ConsumerThread consumerThread = (ConsumerThread) cont.getBean("consumerThread");
+		consumerThread.setName("Consumer thread 1");
+		consumerThread.start();
+
 		runProducer();
 		System.out.println("Data send");
 		try {
-			consumerThread.t.join();
+			consumerThread.join();
 		}
 		catch (InterruptedException e) {
 			System.out.println("Main thread interrupted");
