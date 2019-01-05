@@ -1,16 +1,14 @@
 package eu.europa.ec.contentlayer.pod.pojo;
 
 import eu.europa.ec.contentlayer.pod.constants.IKafkaConstants;
-import eu.europa.ec.contentlayer.pod.consumer.ConsumerCreator;
+import eu.europa.ec.contentlayer.pod.consumer.ConsumerService;
 import eu.europa.ec.contentlayer.pod.transaction.materialization.DataMaterializationEvent;
 import eu.europa.ec.contentlayer.pod.transaction.materialization.DataMaterializationService;
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecords;
 import org.eclipse.rdf4j.RDF4JException;
-import org.eclipse.rdf4j.model.IRI;
 import org.eclipse.rdf4j.model.Model;
 import org.eclipse.rdf4j.model.ValueFactory;
-import org.eclipse.rdf4j.model.impl.LinkedHashModel;
 import org.eclipse.rdf4j.repository.Repository;
 import org.eclipse.rdf4j.repository.RepositoryConnection;
 import org.eclipse.rdf4j.repository.manager.RemoteRepositoryManager;
@@ -22,14 +20,16 @@ import org.springframework.stereotype.Component;
 @Scope("prototype")
 public class ConsumerThread extends Thread {
     private DataMaterializationService dataMaterializationService;
+    private ConsumerService consumerService;
 
     @Autowired
-    public ConsumerThread(DataMaterializationService dataMaterializationService) {
+    public ConsumerThread(DataMaterializationService dataMaterializationService, ConsumerService consumerService) {
+        this.consumerService = consumerService;
         this.dataMaterializationService = dataMaterializationService;
     }
 
     void runConsumer() {
-        Consumer<String, RdfTransaction> consumer = ConsumerCreator.createConsumer();
+        Consumer<String, RdfTransaction> consumer = this.consumerService.getInstance();
 
 
         // URL of the remote RDF4J Server we want to access
@@ -37,7 +37,6 @@ public class ConsumerThread extends Thread {
         RemoteRepositoryManager manager = new RemoteRepositoryManager(serverUrl);
         manager.initialize();
         Repository storageRepository = manager.getRepository("pod-store");
-        ValueFactory f = storageRepository.getValueFactory();
 
         int noMessageToFetch = 0;
         try {
@@ -52,7 +51,7 @@ public class ConsumerThread extends Thread {
                         break;
                 }
                 consumerRecords.forEach(record -> {
-                    Model model = ConsumerService.transactionToSubjectModel(record);
+                    Model model = eu.europa.ec.contentlayer.pod.pojo.ConsumerService.transactionToSubjectModel(record);
                     DataMaterializationEvent transactionEvent = this.dataMaterializationService.prepareTransaction(storageRepository, record, model);
                     storageRepositoryConnection.add(transactionEvent.getModel(), transactionEvent.getTargetGraph());
                 });

@@ -4,6 +4,8 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
+import eu.europa.ec.contentlayer.pod.datasource.DataSourceDiscovery;
+import eu.europa.ec.contentlayer.pod.datasource.DataSourceDiscoveryFactory;
 import eu.europa.ec.contentlayer.pod.pojo.*;
 import org.apache.kafka.clients.producer.Producer;
 
@@ -20,6 +22,13 @@ public class App {
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext cont = SpringApplication.run(App.class, args);
+
+		DataSourceDiscoveryFactory dataSourceDiscoveryFactory = (DataSourceDiscoveryFactory) cont.getBean("dataSourceDiscoveryFactory");
+		DataSourceDiscovery ds = dataSourceDiscoveryFactory.getInstance();
+		ds.rebuildState();
+		System.out.println(ds.getClass());
+
+		//AppConfig appConfig = new AppConfig();
 		for(String serviceName : cont.getBeanDefinitionNames()) {
 			System.out.println(serviceName);
 		}
