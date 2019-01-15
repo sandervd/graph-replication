@@ -12,6 +12,8 @@ import org.apache.kafka.clients.producer.Producer;
 
 import eu.europa.ec.contentlayer.pod.producer.ProducerCreator;
 import org.eclipse.rdf4j.rio.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ConfigurableApplicationContext;
@@ -19,6 +21,7 @@ import org.springframework.context.ConfigurableApplicationContext;
 @SpringBootApplication
 public class App {
 	private AppConfig appConfig;
+	private static final Logger log = LoggerFactory.getLogger(App.class);
 
 	public static void main(String[] args) {
 		ConfigurableApplicationContext cont = SpringApplication.run(App.class, args);
@@ -26,12 +29,6 @@ public class App {
 		DataSourceDiscoveryFactory dataSourceDiscoveryFactory = (DataSourceDiscoveryFactory) cont.getBean("dataSourceDiscoveryFactory");
 		DataSourceDiscovery ds = dataSourceDiscoveryFactory.getInstance();
 		ds.rebuildState();
-		System.out.println(ds.getClass());
-
-		//AppConfig appConfig = new AppConfig();
-		for(String serviceName : cont.getBeanDefinitionNames()) {
-			System.out.println(serviceName);
-		}
 
 		ConsumerThread consumerThread = (ConsumerThread) cont.getBean("consumerThread");
 		consumerThread.setName("Consumer thread 1");

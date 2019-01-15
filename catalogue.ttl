@@ -1,0 +1,20 @@
+@base <http://data.europa.eu/temp/datasets> .
+@prefix dcat: <http://www.w3.org/ns/dcat#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix dcatap: <http://data.europa.eu/temp/ontology/dcat-ap#> .
+
+</customers>
+  rdfs:label "The customer data, including address data." ;
+  a dcat:Dataset ;
+  dcatap:hasAuthoritativeCatalogue <http://data.europa.eu/temp/data-catalogue/cleomenes> ;
+  dcatap:ontology <http://data.europa.eu/temp/ontologies/customers> .
+
+
+</news>
+  rdfs:label "The latest news" ;
+  a dcat:Dataset ;
+  dcatap:hasAuthoritativeCatalogue <http://data.europa.eu/temp/data-catalogue/agri> .
+
+</eurovoc>
+  rdfs:label "The EuroVoc reference data set" ;
+  a dcat:Dataset .
